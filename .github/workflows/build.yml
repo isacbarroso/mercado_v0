@@ -1,0 +1,28 @@
+name: Gerar APK mercado_v0
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Gerar APK com Buildozer
+        id: buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        with:
+          command: buildozer android debug
+          buildozer_version: stable
+
+      - name: Renomear para mercado_v0.apk
+        run: cp "${{ steps.buildozer.outputs.filename }}" mercado_v0.apk
+
+      - name: Disponibilizar o APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: mercado_v0
+          path: mercado_v0.apk
